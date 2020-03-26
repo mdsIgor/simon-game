@@ -1,2 +1,2 @@
-# clipi
-Simple static site boilerplate
+# Simon-Game
+Simon is an electronic game of memory skill 
