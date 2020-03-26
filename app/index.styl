@@ -1,8 +1,12 @@
 @require 'normalize.css/normalize.css'
+//@import url('https://fonts.googleapis.com/css?family=Alfa+Slab+One|VT323|Oswald');
+
+*{
+  box-sizing: border-box;
+}
 
 html,
 body {
-
   height: 100%;
   width: 100%;
 
@@ -15,20 +19,83 @@ body {
 }
 
 .main {
-
-  align-items: center;
   display: flex;
-  flex-direction: column;
+  background-image: url('http://cdn.backgroundhost.com/backgrounds/subtlepatterns/retina_wood.png');
   justify-content: center;
-  height: 100%;
-  width: 100%;
+  align-items: center;
+  height: 100vh;
 
-  > .badges {
 
-    transition: transform 1s
-    max-width: 550px;
-    width: 100%;
+  .simon {
+    display: flex;
+    flex-wrap: wrap;
+    //background-color: grey;
+    height: 500px;
+    width: 500px;
+    border: 10px solid rgb(69, 60, 45);
+    border-radius: 50%;
+    overflow: hidden;
 
+    &-title{
+      text-align: center;
+      font-size: 50px;
+      font-family: 'Alfa Slab One', cursive;
+      position: relative;
+      
+
+      span{
+        font-size: 20px;
+        position: absolute;
+        top: 5px;
+      }
+    }
+    
+
+    &-menu{
+      position: absolute;
+      background-color: #e0e0e0;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;  
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 10px solid rgb(69, 60, 45);
+      z-index: 10;
+      padding: 30px;
+    }
+
+    &-color{
+      //background-color: orangered;
+      flex-basis: 50%;
+      z-index: 1;
+      filter: brightness(0.5);
+      box-sizing: content-box;
+      //border: 10px solid rgb(69, 60, 45);
+      
+      &--1 {
+        background-color: green;
+      }
+
+      &--2 {
+        background-color: rgb(255,0,0);
+      }
+
+      &--3 {
+        background-color: yellow;
+      }
+
+      &--4 {
+        background-color: blue;
+      }
+
+      &-active{
+        filter: brightness(2);
+      }
+      
+      
+      
+    }  
   }
 
 }
