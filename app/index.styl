@@ -36,6 +36,22 @@ body {
     border-radius: 50%;
     overflow: hidden;
 
+    &-menu{
+      position: absolute;
+      background-color: #e0e0e0;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;  
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 10px solid rgb(69, 60, 45);
+      z-index: 10;
+      padding: 30px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
     &-title{
       text-align: center;
       font-size: 50px;
@@ -49,21 +65,12 @@ body {
         top: 5px;
       }
     }
+
+    &-btn-on-off{
+      margin: 0 auto;  
+    }
     
 
-    &-menu{
-      position: absolute;
-      background-color: #e0e0e0;
-      width: 250px;
-      height: 250px;
-      border-radius: 50%;  
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border: 10px solid rgb(69, 60, 45);
-      z-index: 10;
-      padding: 30px;
-    }
 
     &-color{
       //background-color: orangered;
@@ -71,6 +78,7 @@ body {
       z-index: 1;
       filter: brightness(0.5);
       box-sizing: content-box;
+      cursor: pointer;
       //border: 10px solid rgb(69, 60, 45);
       
       &--1 {
