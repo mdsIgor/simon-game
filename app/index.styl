@@ -50,11 +50,12 @@ body {
       padding: 30px;
       display: flex;
       flex-wrap: wrap;
+      justify-content: space-between;
     }
 
     &-title{
       text-align: center;
-      font-size: 50px;
+      font-size: 45px;
       font-family: 'Alfa Slab One', cursive;
       position: relative;
       
@@ -66,11 +67,52 @@ body {
       }
     }
 
-    &-btn-on-off{
-      margin: 0 auto;  
+    &-count-view{
+      width: 60px;
+      height: 35px;
+      background-color: black;
     }
-    
 
+    &-btn-rounded {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: 2px grey solid;
+      
+    }
+
+    &-btn-on-off{
+      margin: 10px auto;
+      width: 60px;
+      height: 25px;   
+      border: 1px solid black;
+      background-color: grey;
+      display: flex;
+
+
+
+      &-span{
+        background-color: blue;
+        width: 50%;
+        height: 100%;
+        margin-left: 0%;
+        transition: all .2s;
+
+        &--active{
+          margin-left: 50%;
+        }  
+      }
+
+    }
+  
+    
+    &-btn-start{
+      background-color: red;
+    }
+
+    &-btn-strict {
+      background-color: yellow;  
+    }
 
     &-color{
       //background-color: orangered;
