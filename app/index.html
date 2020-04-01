@@ -12,22 +12,44 @@
 <body>
   <main class="main">
     <div class="simon">
+
       <div class="simon-menu">
-        <h1 class="simon-title">Simon<span>&reg;</span></h1>
-        <div class="simon-count-view">
-          <p class="simon-count-level" id="level-counter">&nbsp;</p>
+        <h1 class="simon-menu__title">Simon<span>&reg;</span></h1>
+        
+
+        <div class="simon-menu__button-wrapper">
+          <div class="simon-menu__button-wrapper-row-1">
+            
+            <div class="simon-menu__button-wrapper__count-view">
+              <p class="simon-menu__button-wrapper__count-level" id="level-counter">&nbsp;</p>
+            </div>
+            
+            <div class="simon-menu__button-wrapper-individual">
+              <button class="simon-btn-rounded simon-btn-start" id="btn-start"></button>
+              <p class="simon-btn-start__text">Start</p>
+            </div>
+            
+            <div class="simon-menu__button-wrapper-individual">
+              <button class="simon-btn-rounded simon-btn-strict" id="btn-strict">
+                <span class="simon-btn-strict-light" id="strict-light">&nbsp;</span>
+              </button>
+              <p class="simon-btn-strict__text">Strict</p>
+            </div>
+          </div>
+
+          <button class="simon-btn-on-off" id="btn-on-off">
+            <span class="simon-btn-on-off-span" id="on-off-span">&nbsp;</span>
+          </button>
         </div>
-        <button class="simon-btn-rounded simon-btn-start" id="btn-start"></button>
-        <button class="simon-btn-rounded simon-btn-strict" id="btn-strict">
-          <span class="simon-btn-strict-light" id="strict-light">&nbsp;</span>
-        </button>
 
 
-        <button class="simon-btn-on-off" id="btn-on-off">
-          <span class="simon-btn-on-off-span" id="on-off-span">&nbsp;</span>
-        </button>
+        
       
       </div>
+
+
+
+
       <div class="simon-color simon-color--1" id="color-1">
         <audio id="color-1-audio" src="./assets/sounds/simonSound1.mp3"></audio>
       </div>
@@ -40,6 +62,9 @@
       <div class="simon-color simon-color--4" id="color-4">
         <audio id="color-4-audio" src="./assets/sounds/simonSound4.mp3"></audio>
       </div>
+
+
+
     </div>
   </main>
   <script src="./index.js"></script>
