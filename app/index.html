@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simon Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alfa+Slab+One|VT323|Oswald'">
   <link rel="stylesheet" href="./index.styl">
   
@@ -13,9 +14,13 @@
     <div class="simon">
       <div class="simon-menu">
         <h1 class="simon-title">Simon<span>&reg;</span></h1>
-        <div class="simon-count-view"></div>
+        <div class="simon-count-view">
+          <p class="simon-count-level" id="level-counter">&nbsp;</p>
+        </div>
         <button class="simon-btn-rounded simon-btn-start" id="btn-start"></button>
-        <button class="simon-btn-rounded simon-btn-strict" id="btn-strict"></button>
+        <button class="simon-btn-rounded simon-btn-strict" id="btn-strict">
+          <span class="simon-btn-strict-light" id="strict-light">&nbsp;</span>
+        </button>
 
 
         <button class="simon-btn-on-off" id="btn-on-off">

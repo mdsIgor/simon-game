@@ -3,6 +3,7 @@
 
 *{
   box-sizing: border-box;
+  outline: none;
 }
 
 html,
@@ -71,6 +72,15 @@ body {
       width: 60px;
       height: 35px;
       background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+    }
+    &-count-level{
+      font-family: 'VT323', monospace;
+      color: red;
+      font-size: 30px;
     }
 
     &-btn-rounded {
@@ -86,7 +96,7 @@ body {
       width: 60px;
       height: 25px;   
       border: 1px solid black;
-      background-color: grey;
+      background-color: darken(grey, 40);
       display: flex;
 
 
@@ -108,10 +118,31 @@ body {
     
     &-btn-start{
       background-color: red;
+      
+      &-text{
+        
+      }
     }
 
     &-btn-strict {
-      background-color: yellow;  
+      background-color: yellow;
+      position: relative;  
+
+      &-light{
+        position: absolute;
+        background-color: red;
+        border: 1px solid black;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-top: -30px;
+        margin-left: -5px;
+        filter: brightness(0.25);
+
+        &--active {
+          filter: brightness(1);
+        }
+      }
     }
 
     &-color{

@@ -3,6 +3,7 @@ const modelGame = {
     _isStarted: false,
     _level: 0,
     _strictMode: false,
+    _maxLevel: 20,
 
     get isStarted(){
         return this._isStarted
@@ -20,6 +21,15 @@ const modelGame = {
         return this._level = level;
     },
     
+
+    get maxLevel(){
+        return this._maxLevel;
+    },
+
+    set maxLevel(maxLevel){
+        return this._maxLevel = maxLevel;
+    },
+
     get strictMode(){
         return this._strictMode
     },
@@ -35,6 +45,8 @@ const modelGame = {
 
 const onoffbutton = document.getElementById('btn-on-off');
 const onoffspan = document.getElementById('on-off-span');
+const levelCounter = document.getElementById('level-counter');
+const strictLight = document.getElementById('strict-light');
 const color1 = document.getElementById('color-1');
 const color2 = document.getElementById('color-2');
 const color3 = document.getElementById('color-3');
@@ -48,8 +60,13 @@ onoffbutton.addEventListener('click', () => {
     
     if(!onoffspan.classList.contains("simon-btn-on-off-span--active")){
         console.log("desligado");
+        levelCounter.textContent = "";
+        startButton.style.pointerEvents = "none";
+        strictModeButton.style.pointerEvents = "none";
     } else {
         console.log("ligado");
+        startButton.style.pointerEvents = "auto";
+        strictModeButton.style.pointerEvents = "auto";
         prepareGame();
         
     }
@@ -64,10 +81,19 @@ const prepareGame = () => {
     const thisGame = modelGame;
     thisGame._isStarted = true;
     thisGame._level = 0;
+    levelCounter.textContent = thisGame.level;
     
     strictModeButton.addEventListener("click", ()=>{
-        thisGame._strictMode = true;
-        console.log("strict on");
+
+        if(!thisGame._strictMode){
+            thisGame._strictMode = true;
+            strictLight.classList.add("simon-btn-strict-light--active")
+            console.log("strict on");
+        } else {
+            thisGame._strictMode = false;
+            strictLight.classList.remove("simon-btn-strict-light--active")
+            console.log("strict off");
+        }
     });
 
 
@@ -121,13 +147,14 @@ const blinkAllTillCurrentLevel = async (gameSteps) => {
 
 const runGame = async (thisGame) => {
     const gameSteps = [];
-    while(thisGame._level < 5){
+    while(thisGame._level !== thisGame._maxLevel){
      
         //sorting a number and pushing it to the sequence
         const sortedNumber = getRandonNumber();
         gameSteps.push(sortedNumber);
         //blink all till the current level
         await blinkAllTillCurrentLevel(gameSteps);
+        
         
         //create an array to all user steps every iteration
         const userSteps = [];
@@ -145,14 +172,18 @@ const runGame = async (thisGame) => {
             } else {
                 if(thisGame._strictMode){
                     console.log("errou no strict mode");
-                    const newGame = prepareGame();
-                    return runGame(newGame);
+                    levelCounter.textContent = "!!";
+                    let newGame;
+                    setTimeout(()=>{ newGame = prepareGame()}, 1000);
+                    return setTimeout(()=>{ runGame(newGame)}, 1500);
                     
                     
                 } else {
+                    levelCounter.textContent = "!!";
                     console.log("errou, piscando de novo");
                     index = 0;                
-                    await blinkAllTillCurrentLevel(gameSteps);
+                    setTimeout(() => { levelCounter.textContent = thisGame.level },1000);
+                    setTimeout(async ()=> { await blinkAllTillCurrentLevel(gameSteps)}, 1500);
                 }
             }
         
@@ -160,6 +191,7 @@ const runGame = async (thisGame) => {
 
         console.log("saí do bagulho doido");
         thisGame.increaseLevel();
+        levelCounter.textContent = thisGame.level;
         console.log("proximo nivel: " + thisGame._level);
         
     }
