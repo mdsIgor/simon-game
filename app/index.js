@@ -1,47 +1,95 @@
-//model
-const modelGame = {
-    _isStarted: false,
-    _level: 0,
-    _strictMode: false,
-    _maxLevel: 20,
+//Class
+class Game{
 
-    get isStarted(){
-        return this._isStarted
-    },
-
-    set isStarted(isStarted){
-        this._isStarted = isStarted;
-    },
-
-    get level(){
-        return this._level;
-    },
-
-    set level(level){
-        return this._level = level;
-    },
+    _gameSteps= [];
+    _isRunning= false;
+    _isStarted= false;
+    _level= "";
+    _maxLevel= 20;
+    _strictMode= false;
+    
+    get gameSteps(){
+        return this._gameSteps
+    };
+    
+    set gameSteps(gameSteps){
+        this._gameSteps = gameSteps;
+    };
     
 
+    get isRunning(){
+        return this._isRunning
+    };
+    
+    set isRunning(isRunning){
+        this._isRunning = isRunning;
+    };
+    
+    get isStarted(){
+        return this._isStarted
+    };
+    
+    set isStarted(isStarted){
+        this._isStarted = isStarted;
+    };
+    
+    get level(){
+        return this._level;
+    };
+    
+    set level(level){
+        return this._level = level;
+    };
+    
+    
     get maxLevel(){
         return this._maxLevel;
-    },
-
+    };
+    
     set maxLevel(maxLevel){
         return this._maxLevel = maxLevel;
-    },
-
+    };
+    
     get strictMode(){
         return this._strictMode
-    },
-
+    };
+    
     set strictMode(strictMode){
         this._strictMode = strictMode;
-    },
-
+    };
+    
     increaseLevel(){
         this._level++;
+    };
+    
+    async resetGame() {
+        this._gameSteps= undefined;
+        this._isRunning= false;
+        this._isStarted= false;
+        this._level= "";
+        this._maxLevel= 20;
+        this._strictMode= false;
+    };
+
+    turnStrictModeOff(){
+        this._isRunning = false,
+        this._level = 1,
+        this._strictMode = false,
+        this._gameSteps = []
+    }
+
+    resetStrictGame() {
+        this._level = 1,
+        this._gameSteps = []
+    }
+    
+    addStep(step) {
+        this._gameSteps.push(step);
     }
 }
+
+//initializing game
+const currentGame = new Game();
 
 const onoffbutton = document.getElementById('btn-on-off');
 const onoffspan = document.getElementById('on-off-span');
@@ -55,80 +103,86 @@ const myColors = [color1, color2, color3, color4];
 const strictModeButton = document.getElementById('btn-strict');
 const startButton = document.getElementById('btn-start');
 
+
+const runStrictStuff = () => {
+    if(!currentGame._strictMode){
+        currentGame._strictMode = true;
+        strictLight.classList.add("simon-btn-strict-light--active")
+        console.log("strict on " + currentGame._strictMode);
+        
+    } else {
+        if(!currentGame._isRunning){
+            currentGame.strictMode = false;
+            strictLight.classList.remove("simon-btn-strict-light--active")
+            console.log("strict off " + currentGame._strictMode);
+        } else {
+            console.log("game rodando");
+            
+        }
+    }
+};
+
+const runStartStuff = () =>{
+    if(!currentGame._isRunning){    
+        
+        runGame();
+        
+    } else {
+        
+        console.log("game já está ligado leigo");
+    }
+}
+
 onoffbutton.addEventListener('click', () => {
     onoffspan.classList.toggle("simon-btn-on-off-span--active");
     
-    if(!onoffspan.classList.contains("simon-btn-on-off-span--active")){
-        console.log("desligado");
-        levelCounter.textContent = "";
-        startButton.style.pointerEvents = "none";
-        strictModeButton.style.pointerEvents = "none";
-    } else {
-        console.log("ligado");
-        startButton.style.pointerEvents = "auto";
-        strictModeButton.style.pointerEvents = "auto";
-        prepareGame();
+    if(!currentGame._isStarted){
+
+        currentGame._isStarted = true;
+        console.log("ligado " + currentGame.isStarted);
+        currentGame._level = 1;
+        levelCounter.textContent = currentGame._level;
+    
+        strictModeButton.addEventListener("click", runStrictStuff);
+        startButton.addEventListener("click", runStartStuff);
         
+        
+    } else {
+        currentGame.resetGame();
+        strictModeButton.removeEventListener("click", runStrictStuff);
+        startButton.removeEventListener("click", runStartStuff);
+        strictLight.classList.remove("simon-btn-strict-light--active")
+        console.log("desligado " + currentGame.isStarted + " strict mode " + currentGame._strictMode);
+        levelCounter.textContent = ""; 
+             
     }
     
       
 });
 
-
-
-
-const prepareGame = () => {
-    const thisGame = modelGame;
-    thisGame._isStarted = true;
-    thisGame._level = 0;
-    levelCounter.textContent = thisGame.level;
-    
-    strictModeButton.addEventListener("click", ()=>{
-
-        if(!thisGame._strictMode){
-            thisGame._strictMode = true;
-            strictLight.classList.add("simon-btn-strict-light--active")
-            console.log("strict on");
-        } else {
-            thisGame._strictMode = false;
-            strictLight.classList.remove("simon-btn-strict-light--active")
-            console.log("strict off");
-        }
-    });
-
-
-    startButton.addEventListener("click", () => {
-        setTimeout(()=> {
-            runGame(thisGame);
-        },1000);
-    });
-
-    return thisGame;
-      
-};
-
 const getRandonNumber = () => Math.floor(Math.random() * (5 - 1) + 1);
 
-
 const blinkLight = (elem) => {
- 
-    const addClass = () => elem.classList.add("simon-color-active");
-    const removeClass = () => elem.classList.remove("simon-color-active");    
 
-    return new Promise( (resolve) => {
-        addClass();
-        elem.children[0].play();
-        setTimeout(() => {
-            removeClass();      
-        },1000);
-        setTimeout(resolve, 1500);
-        
-        
-    });
+    if(currentGame._isStarted){   
+        const addClass = () => elem.classList.add("simon-color-active");
+        const removeClass = () => elem.classList.remove("simon-color-active");    
+
+        return new Promise( (resolve) => {
+            addClass();
+            elem.children[0].play();
+            setTimeout(() => {
+                removeClass();      
+            },1000);
+            setTimeout(resolve, 1500);
+            
+            
+        });
+    }
 };
 
 const getUserClickedItem = () => {
-    return new Promise( resolve => { 
+    return new Promise( (resolve) => { 
         
         color1.addEventListener('click', ()=> resolve(1));
         color2.addEventListener('click', ()=> resolve(2));
@@ -145,54 +199,74 @@ const blinkAllTillCurrentLevel = async (gameSteps) => {
     };
 };
 
-const runGame = async (thisGame) => {
-    const gameSteps = [];
-    while(thisGame._level !== thisGame._maxLevel){
-     
-        //sorting a number and pushing it to the sequence
-        const sortedNumber = getRandonNumber();
-        gameSteps.push(sortedNumber);
-        //blink all till the current level
-        await blinkAllTillCurrentLevel(gameSteps);
-        
-        
-        //create an array to all user steps every iteration
-        const userSteps = [];
+const runGame = async () => {
+    currentGame._isRunning = true;
+    currentGame._gameSteps = [];
+    
+    for (let iLevel = 0; iLevel < currentGame._maxLevel;) { 
+        //verificacao constatada no debug   
+        if(currentGame._isStarted || currentGame.isRunning){
 
-        for (let index = 0; index < gameSteps.length; ) {
+            console.log("currgame1");
+            console.log(currentGame);
+
+            levelCounter.textContent = currentGame._level;
+
+            //sorting a number and pushing it to the sequence
+            const sortedNumber = getRandonNumber();
+            currentGame.addStep(sortedNumber);
+            //blink all till the current level
+            await blinkAllTillCurrentLevel(currentGame._gameSteps);
+        
+        
+        
+        
             
-            const currentSelectedColor = await getUserClickedItem();
-            await blinkLight(myColors[currentSelectedColor-1]);
+            for (let index = 0; index < currentGame._gameSteps.length; ) {
+                //create an array to all user steps every iteration
+                const userSteps = [];
+                
 
-
-            if(gameSteps[index] === currentSelectedColor){
-                console.log("acertou esse botao");
-                userSteps.push(currentSelectedColor);
-                index++;
-            } else {
-                if(thisGame._strictMode){
-                    console.log("errou no strict mode");
-                    levelCounter.textContent = "!!";
-                    let newGame;
-                    setTimeout(()=>{ newGame = prepareGame()}, 1000);
-                    return setTimeout(()=>{ runGame(newGame)}, 1500);
-                    
-                    
+                const currentSelectedColor = await getUserClickedItem();
+                await blinkLight(myColors[currentSelectedColor-1]);
+            
+                
+                if(currentGame._gameSteps[index] === currentSelectedColor){
+                    console.log("acertou esse botao");
+                    userSteps.push(currentSelectedColor);
+                    index++;
                 } else {
-                    levelCounter.textContent = "!!";
-                    console.log("errou, piscando de novo");
-                    index = 0;                
-                    setTimeout(() => { levelCounter.textContent = thisGame.level },1000);
-                    setTimeout(async ()=> { await blinkAllTillCurrentLevel(gameSteps)}, 1500);
+                    if(currentGame._strictMode){
+                        console.log("errou no strict mode");
+                        levelCounter.textContent = "!!";
+                        currentGame.resetStrictGame();
+                        
+                        return setTimeout(runGame,1500);
+                        
+                        
+                    } else {
+                        levelCounter.textContent = "!!";
+                        console.log("errou, piscando de novo");
+                        index = 0;                                        
+                        await blinkAllTillCurrentLevel(currentGame._gameSteps);
+                        levelCounter.textContent = currentGame._level;
+                    }
                 }
+                    
             }
-        
-        }
+           
 
-        console.log("saí do bagulho doido");
-        thisGame.increaseLevel();
-        levelCounter.textContent = thisGame.level;
-        console.log("proximo nivel: " + thisGame._level);
+        
+            iLevel++;
+            currentGame.increaseLevel();
+            console.log("proximo nivel: " + currentGame._level);
+        } else {
+            levelCounter.textContent = "";
+            
+        }
+        
+        
         
     }
+    
 }
