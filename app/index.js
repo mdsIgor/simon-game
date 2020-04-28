@@ -1,18 +1,64 @@
 class Game{
-    _gameSteps= [];
-    _isRunning= false;
-    _isStarted= false;
-    _level= "";
-    _maxLevel= 20;
-    _strictMode= false;
-    _bigFourButtonColors = [];
-    _levelCounter = null;
-    _color1 = null;
-    _color2 = null;
-    _color3 = null;
-    _color4 = null;
-    _strictLight = null;
-    _userSteps = [];
+    _gameSteps;
+    _userSteps;
+    _isRunning;
+    _isStarted;
+    _level;
+    _maxLevel;
+    _strictMode;
+
+    constructor() {
+        this.gameSteps= [];
+        this.userSteps = [];
+        this.isRunning= false;
+        this.isStarted= false;
+        this.level = 1;
+        this.maxLevel= 20;
+        this.strictMode= false;
+        this.levelCounter = document.getElementById('level-counter');
+        this.color1 = document.getElementById('color-1');
+        this.color2 = document.getElementById('color-2');
+        this.color3 = document.getElementById('color-3');
+        this.color4 = document.getElementById('color-4');
+        this.bigFourButtonColors = [this.color1, this.color2, this.color3, this.color4];
+        this.strictLight = document.getElementById('strict-light');
+        this.onoffButton = document.getElementById('btn-on-off');
+        this.onoffSpan = document.getElementById('on-off-span');
+        this.strictModeButton = document.getElementById('btn-strict');
+        this.startButton = document.getElementById('btn-start');
+    };
+    
+    get strictModeButton(){
+        return this._strictModeButton
+    };
+
+    set strictModeButton(strictModeButton){
+        this._strictModeButton = strictModeButton;
+    };
+
+    get startButton(){
+        return this._startButton
+    };
+
+    set startButton(startButton){
+        this._startButton = startButton;
+    };
+
+    get onoffSpan(){
+        return this._onoffSpan
+    };
+
+    set onoffSpan(onoffSpan){
+        this._onoffSpan = onoffSpan;
+    };
+
+    get onoffButton(){
+        return this._onoffButton
+    };
+
+    set onoffButton(onoffButton){
+        this._onoffButton = onoffButton;
+    };
 
     get userSteps(){
         return this._userSteps
@@ -127,14 +173,14 @@ class Game{
     };
     
     increaseLevel(){
-        this._level++;
+        this.level = this.level + 1;
     };
 
     resetGame() {
         this.gameSteps= [];
         this.isRunning= false;
         this.isStarted= false;
-        this.level= "1";
+        this.level= 1;
         this.maxLevel= 20;
         this.strictMode= false;
         this.levelCounter.textContent = '';
@@ -236,34 +282,47 @@ class Game{
         })
     };
 
+    resetUserSteps = () => {
+        this.userSteps = [];
+    };
 
+    showLevel = () => {
+        this.levelCounter.textContent = this.level;
+    };
+
+    showError = () => {
+        if(this.isRunning && this.isStarted){
+            return new Promise (resolve => {
+                this.levelCounter.textContent = "!!";
+                setTimeout(resolve, 500);
+            })
+        }
+    };
 
     runGame = async () => {
-        console.log(
-            "checking level at the begning of the game: " + this.level
-        );
+        this.resetUserSteps();
+
         
-        //reset user steps
-        this.userSteps = [];
+        //generate first step
+        const randonNumberForArray = getRandonNumber() - 1;
+        this.gameSteps.push(randonNumberForArray);
 
         while(this.level <= this.maxLevel && this.isRunning){
-            //generate a step
-            const randonNumberForArray = getRandonNumber() - 1;
-            this.gameSteps.push(randonNumberForArray);
             
-            console.log("Game steps: " + this.gameSteps);
+            //new random number for lvl 1 on strict mode
+            if (this.strictMode && this.level === 1 ){
+                this.gameSteps = [];
+                const randonNumberForArray = getRandonNumber() - 1;
+                this.gameSteps.push(randonNumberForArray);
+            }
 
             //blink all the sequence
             await this.blinkAllTillCurrentLevel(this.gameSteps);
-            
-            //reset user steps
-            this.userSteps = [];
+            //this.resetUserSteps();
 
 
-            //fazer cada verificação ao clique do usuario e remover o for dentro do while
             if(this.isRunning && this.isStarted){
                 for (let index = 0; index < this.level; ) {
-                    
                     
                     const userSelection = await this.getUserClickedItem();
                     const userElementToBlink = this.bigFourButtonColors[userSelection];
@@ -273,31 +332,66 @@ class Game{
                         console.log("acertou esse passo");
                         this.userSteps.push(userSelection);
                         index++;
-                        this.levelCounter.textContent = this.level;
+                        this.showLevel();
                     } else {
-                        
-                        if(this.strictMode){
-                            this.levelCounter.textContent = "!!";
-                            //reset user steps
-                            this.userSteps = [];
 
+                        if(this.strictMode){
+                            console.log("entrei na condição de erro do strict");
+                            
+                            await this.showError();
+                            this.resetUserSteps();
                             this.gameSteps = [];
-                            this.level = 0;
+                            this.level = 1;
+                            break;
+
                         } else {
-                            this.levelCounter.textContent = "!!";
+                            await this.showError();
+                            this.resetUserSteps();
                             console.log("errou, piscando de novo");
-                            //reset user steps
-                            this.userSteps = [];
-                            index = 0;   
-                            await this.blinkAllTillCurrentLevel(this.gameSteps);
-                            this.levelCounter.textContent = this.level;
+                            break;
                         }
+
                     }
                     
                 }
+
+                console.log("sai do for");
+                console.log(this.userSteps);
+
+                if(this.strictMode){
+                    if(this.userSteps.length !== 0){
+                        //new number for the sequence
+                        const randonNumberForArray = getRandonNumber() - 1;
+                        this.gameSteps.push(randonNumberForArray);
+
+                        this.resetUserSteps();
+                        this.increaseLevel();    
+                    } else {
+                        console.log("errei no strict");
+                        this.resetUserSteps();
+                        this.gameSteps = [];
+                        
+                    }
+
+                }else {
+                    if(this.userSteps.length === this.gameSteps.length){
+                        //new number for the sequence
+                        const randonNumberForArray = getRandonNumber() - 1;
+                        this.gameSteps.push(randonNumberForArray);
+
+                        this.resetUserSteps();
+                        this.increaseLevel();
+
+
+                    } else {
+                        //console.log("entrei no errado. Level: " + this.level);
+                        //console.log(this.gameSteps);
+                        
+                        
+                    }
+                }
                 
-                this.increaseLevel();
-                this.levelCounter.textContent = this.level;
+                this.showLevel();
             }
         }
 
@@ -310,40 +404,25 @@ class Game{
 
     
     init = () => {
-        const onoffbutton = document.getElementById('btn-on-off');
-        const onoffspan = document.getElementById('on-off-span');
-        this.levelCounter = document.getElementById('level-counter');
-        this.strictLight = document.getElementById('strict-light');
-        this.color1 = document.getElementById('color-1');
-        this.color2 = document.getElementById('color-2');
-        this.color3 = document.getElementById('color-3');
-        this.color4 = document.getElementById('color-4');
-        this.bigFourButtonColors = [this.color1, this.color2, this.color3, this.color4];
-        const strictModeButton = document.getElementById('btn-strict');
-        const startButton = document.getElementById('btn-start');
-    
-        onoffbutton.addEventListener('click', () => {
-            onoffspan.classList.toggle("simon-btn-on-off-span--active");
+        this.onoffButton.addEventListener('click', () => {
+            this.onoffSpan.classList.toggle("simon-btn-on-off-span--active");
             
             if(!this.isStarted){
                 this.isStarted = true;
                 this.level = 1;
-                this.levelCounter.textContent = this.level;
-                strictModeButton.addEventListener("click", this.runStrictStuff);
-                startButton.addEventListener("click", this.runStartStuff);
+                this.showLevel();
+                this.strictModeButton.addEventListener("click", this.runStrictStuff);
+                this.startButton.addEventListener("click", this.runStartStuff);
                 
             } else {
                 this.resetGame();
-                strictModeButton.removeEventListener("click", this.runStrictStuff);
-                startButton.removeEventListener("click", this.runStartStuff);
+                this.strictModeButton.removeEventListener("click", this.runStrictStuff);
+                this.startButton.removeEventListener("click", this.runStartStuff);
                 this.strictLight.classList.remove("simon-btn-strict-light--active")
                 this.levelCounter.textContent = ""; 
                     
             }
-            
-            
         });
-    
     };
     
 }
